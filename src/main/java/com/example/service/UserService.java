@@ -47,12 +47,12 @@ public class UserService {
     @Transactional
     public void EditPassword(String token, String oldPassword, String newPassword) {
         String userId = tokenService.validateJwt(token);
-        UserDO userDO = userMapper.findByUsername(userId);
+        UserDO userDO = userMapper.findByUserId(userId);
         if (userDO == null) {
             throw new UserNotFoundException("User not found");
         }
 
-        if (!userDO.getPassword().equals(oldPassword)) {
+        if (!userDO.getPassword().equals(PasswordUtil.Md5Encrypt(oldPassword, null))) {
             throw new InvalidPasswordException("Password does not match");
         }
 

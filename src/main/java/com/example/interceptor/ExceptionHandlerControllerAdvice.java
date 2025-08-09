@@ -17,14 +17,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @version 1.0
  * @since 2025/8/6
  */
+
 @ControllerAdvice
 public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(value = {Throwable.class})
-    public ResponseEntity<String> handleException(Throwable ex) {
+    public ResponseEntity<Object> handleException(Throwable ex) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        apiResponse.setMessage(ex.getMessage());
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (ex instanceof BaseHttpException) {
-            httpStatus = ((BaseHttpException) ex).getHttpStatus();
+        apiResponse.setHttpStatus(httpStatus);
+        if (ex instanceof BaseHttpException baseHttpException) {
+            httpStatus = baseHttpException.getHttpStatus();
+            apiResponse.setHttpStatus(httpStatus);
         }
-        return new ResponseEntity<>(new ApiResponse<String>("",ex.getMessage(), httpStatus).toString(), httpStatus);
+        return ResponseEntity.status(httpStatus).body(apiResponse);
     }
 }
+

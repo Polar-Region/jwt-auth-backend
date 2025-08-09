@@ -27,11 +27,16 @@ public class TokenService {
 
     @Transactional
     public String validateJwt(String token) {
-        if (jwtUtils.validateToken(token)) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new InvalidTokenException("Invalid Authorization header");
+        }
+        String jwtToken = token.substring(7); // 去掉 "Bearer "
+
+        if (!jwtUtils.validateToken(jwtToken)) {
             throw new InvalidTokenException("Token is invalid or expired");
         }
 
-        String userId = jwtUtils.extractUserId(token);
+        String userId = jwtUtils.extractUserId(jwtToken);
         if (userId == null) {
             throw new InvalidTokenException("Token does not contain user ID");
         }

@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.UserDO;
 import com.example.exception.InvalidPasswordException;
+import com.example.exception.InvalidTokenException;
 import com.example.exception.UserNotFoundException;
 import com.example.mapper.UserMapper;
 import com.example.util.PasswordUtil;
@@ -37,7 +38,7 @@ public class AuthService {
             throw new UserNotFoundException("User not found");
         }
 
-        if (!PasswordUtil.Md5Encrypt(password, userDO.getPassword()).equals(userDO.getPassword())) {
+        if (!PasswordUtil.Md5Encrypt(password, "").equals(userDO.getPassword())) {
             throw new InvalidPasswordException("Invalid password");
         }
 
@@ -46,6 +47,7 @@ public class AuthService {
 
     @Transactional
     public String getUsernameFromJwt(String token) {
+
         String userId = tokenService.validateJwt(token);
         return userMapper.findByUserId(userId).getUsername();
     }

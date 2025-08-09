@@ -28,12 +28,12 @@ public class AuthController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ApiResponse<String> login(@RequestBody LoginRequest loginRequest) {
         String token = authService.Login(loginRequest.getUsername(), loginRequest.getPassword());
-        return new ApiResponse<String>(token, "Login success", HttpStatus.OK);
+        return new ApiResponse<>(token, HttpStatus.OK, "login success");
     }
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.GET)
     public ApiResponse<String> authenticate(@RequestHeader("Authorization") String token) {
         String username = authService.getUsernameFromJwt(token);
-        return new ApiResponse<>(username, "Authentication successful", HttpStatus.OK);
+        return new ApiResponse<>(username, HttpStatus.OK, "authenticate success");
     }
 }
